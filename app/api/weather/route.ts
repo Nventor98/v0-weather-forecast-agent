@@ -8,6 +8,7 @@ import {
   UIMessage,
   validateUIMessages,
 } from "ai"
+import { openai } from "@ai-sdk/openai"
 import * as z from "zod"
 
 export const maxDuration = 30
@@ -116,7 +117,7 @@ export async function POST(req: Request) {
   })
 
   const result = streamText({
-    model: "openai/gpt-4o-mini",
+    model: openai("gpt-4o-mini"),
     system: `You are a friendly and knowledgeable weather assistant. When users ask about the weather in any city, use the getCurrentWeather tool to fetch current conditions, and the getForecast tool for multi-day forecasts. 
     
     Always be helpful, provide useful weather insights, and suggest appropriate clothing or activities based on the weather. If the user asks about weather without specifying a city, ask them which city they'd like to check. 
