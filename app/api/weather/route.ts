@@ -8,11 +8,13 @@ import {
   UIMessage,
   validateUIMessages,
 } from "ai"
-import { createGroq } from "@ai-sdk/groq"
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
 import * as z from "zod"
 
-const groq = createGroq({
+const groq = createOpenAICompatible({
+  name: "groq",
   apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 })
 
 export const maxDuration = 30
@@ -268,7 +270,7 @@ export async function POST(req: Request) {
   })
 
   const result = streamText({
-    model: groq("llama-3.3-70b-versatile"),
+    model: groq.chatModel("llama-3.3-70b-versatile"),
     system: `You are a friendly and knowledgeable Nigerian weather assistant. You specialize in weather forecasts across all 36 Nigerian states and the FCT (Federal Capital Territory).
 
 When users ask about weather, use the appropriate tools:
