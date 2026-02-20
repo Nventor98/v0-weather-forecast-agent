@@ -27,6 +27,7 @@ interface StateWeather {
   state: string
   capital: string
   zone: string
+  cities: string[]
   temperature: number
   conditions: string
   humidity: number
@@ -43,6 +44,15 @@ interface DetailedData extends StateWeather {
     low: number
     conditions: string
     precipitation: number
+  }[]
+  cityWeather?: {
+    city: string
+    temperature: number
+    conditions: string
+    humidity: number
+    windSpeed: number
+    high: number
+    low: number
   }[]
 }
 
@@ -74,10 +84,12 @@ export function WeatherDashboard() {
   const filteredStates = useMemo(() => {
     if (!data?.states) return []
     return data.states.filter((s) => {
+      const q = search.toLowerCase()
       const matchesSearch =
         !search ||
-        s.state.toLowerCase().includes(search.toLowerCase()) ||
-        s.capital.toLowerCase().includes(search.toLowerCase())
+        s.state.toLowerCase().includes(q) ||
+        s.capital.toLowerCase().includes(q) ||
+        s.cities.some(c => c.toLowerCase().includes(q))
       const matchesZone = selectedZone === "All" || s.zone === selectedZone
       return matchesSearch && matchesZone
     })
@@ -129,7 +141,7 @@ export function WeatherDashboard() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search state or capital..."
+              placeholder="Search state, capital, or city..."
               className="w-full rounded-xl border border-border bg-input py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
