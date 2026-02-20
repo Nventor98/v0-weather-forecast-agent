@@ -63,6 +63,7 @@ interface StateWeather {
   state: string
   capital: string
   zone: string
+  cities: string[]
   temperature: number
   conditions: string
   humidity: number
@@ -115,11 +116,15 @@ export function StateWeatherCard({
         </span>
       </div>
 
-      <div className="mt-2">
+      <div className="mt-2 flex items-center gap-2 flex-wrap">
         <span
           className={`inline-flex rounded-md border px-1.5 py-0.5 text-[10px] font-medium ${getZoneColor(data.zone)}`}
         >
           {data.zone}
+        </span>
+        <span className="text-[10px] text-muted-foreground truncate">
+          {data.cities.slice(0, 2).join(", ")}
+          {data.cities.length > 2 && ` +${data.cities.length - 2}`}
         </span>
       </div>
     </button>
@@ -127,10 +132,21 @@ export function StateWeatherCard({
 }
 
 // Detailed state card for expanded view
+interface CityWeather {
+  city: string
+  temperature: number
+  conditions: string
+  humidity: number
+  windSpeed: number
+  high: number
+  low: number
+}
+
 interface DetailedWeatherProps {
   state: string
   capital: string
   zone: string
+  cities?: string[]
   temperature: number
   conditions: string
   humidity: number
@@ -145,6 +161,7 @@ interface DetailedWeatherProps {
     conditions: string
     precipitation: number
   }[]
+  cityWeather?: CityWeather[]
 }
 
 export function DetailedWeatherCard({
@@ -226,6 +243,48 @@ export function DetailedWeatherCard({
           </span>
         </div>
       </div>
+
+      {/* City Weather */}
+      {data.cityWeather && data.cityWeather.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-sm font-semibold text-card-foreground mb-3">
+            Cities in {data.state === "Fct" ? "FCT" : data.state}
+          </h3>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {data.cityWeather.map((city, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between rounded-lg bg-secondary/30 px-4 py-3"
+              >
+                <div className="flex items-center gap-2.5">
+                  {getWeatherIcon(city.conditions, "sm")}
+                  <div>
+                    <span className="text-sm font-medium text-card-foreground">
+                      {city.city}
+                    </span>
+                    <p className="text-xs capitalize text-muted-foreground">
+                      {city.conditions}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-right">
+                  <span className="text-lg font-bold text-card-foreground">
+                    {city.temperature}°
+                  </span>
+                  <div className="flex flex-col text-[10px] text-muted-foreground">
+                    <span className="flex items-center gap-0.5">
+                      <Droplets className="h-2.5 w-2.5" /> {city.humidity}%
+                    </span>
+                    <span className="flex items-center gap-0.5">
+                      <Wind className="h-2.5 w-2.5" /> {city.windSpeed}km/h
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {data.forecast && data.forecast.length > 0 && (
         <div className="mt-6">
