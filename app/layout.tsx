@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Weather Forecast Agent',
-  description: 'AI-powered weather forecast assistant that provides real-time weather data and multi-day forecasts for any city.',
+  title: 'Nigeria Weather Forecast - All 36 States + FCT',
+  description: 'AI-powered weather forecast dashboard for all 36 Nigerian states and the FCT. View current conditions, forecasts, and ask the AI agent for detailed weather insights.',
   generator: 'v0.app',
   icons: {
     icon: [
